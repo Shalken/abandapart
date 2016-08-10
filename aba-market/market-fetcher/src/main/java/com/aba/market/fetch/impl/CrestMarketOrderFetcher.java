@@ -73,7 +73,10 @@ public class CrestMarketOrderFetcher implements MarketOrderFetcher {
         List<CrestMarketOrder> sellOrders = getMarketSellOrders( regionId, itemId );
 
         List<CrestMarketOrder> filteredSellOrders = sellOrders.stream()
-                                                              .filter( order -> order.getLocationId() == hubIdToFind )
+                                                              .filter(
+                                                                      order -> order.getLocationId() ==
+                                                                              hubIdToFind && order.getTypeId() ==
+                                                                              itemId )
                                                               .sorted( new CrestMarketOrderPriceComparator() )
                                                               .collect( Collectors.toList() );
 
@@ -94,6 +97,19 @@ public class CrestMarketOrderFetcher implements MarketOrderFetcher {
 
         return result;
     }
+
+    //TODO: Figure out how to properly uncomment and utilize the below commented out method.  Initial tests do not
+    // look good.
+    //The below comment is a potential to do as well if some things are figured out. These things are how to get this
+    // method
+    // to cache without putting it into a linked service/component and how to properly cache it.  Maybe this does
+    // belong into
+    //another service/component just because it'll be handy to have for mass build calculation checks on a backend?
+    //Candidate for inclusion into the implemented interface
+//    @Cacheable( "all-market-orders" )
+//    public List<CrestMarketBulkOrder> getAllMarketOrders ( long regionId ) {
+//        return crestService.getAllMarketOrders( regionId );
+//    }
 
     private Long getHubStationIdToUse ( long systemId )
     {
